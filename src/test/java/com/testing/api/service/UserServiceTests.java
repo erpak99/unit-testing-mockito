@@ -15,7 +15,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.Optional;
+
 import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTests {
@@ -57,6 +61,53 @@ public class UserServiceTests {
         Assertions.assertThat(savedUser).isNotNull();
 
     }
+
+    @Test
+    public void UserService_GetUserById_ReturnsUserDto() {
+        User user = User.builder()
+                .name("Arda")
+                .type("customer").build();
+
+        when(userRepository.findById(1)).thenReturn(Optional.ofNullable(user));
+
+        UserDto savedUser = userService.getUserById(1);
+
+        Assertions.assertThat(savedUser).isNotNull();
+
+    }
+
+    @Test
+    public void UserService_UpdateUser_ReturnsUserDto() {
+
+        User user = User.builder()
+                .name("Arda")
+                .type("customer").build();
+
+        UserDto userDto = UserDto.builder()
+                .name("Arda")
+                .type("customer")
+                .build();
+
+        when(userRepository.findById(1)).thenReturn(Optional.ofNullable(user));
+        when(userRepository.save(Mockito.any(User.class))).thenReturn(user);
+
+        UserDto savedUser = userService.updateUser(userDto,1);
+
+        Assertions.assertThat(savedUser).isNotNull();
+    }
+
+    @Test
+    public void UserService_DeleteUser_ReturnsUserDto() {
+        User user = User.builder()
+                .name("Arda")
+                .type("customer").build();
+
+        when(userRepository.findById(1)).thenReturn(Optional.ofNullable(user));
+
+        assertAll(() -> userService.deleteUserId(1));
+
+    }
+
 
 
 }
