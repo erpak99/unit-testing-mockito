@@ -1,6 +1,7 @@
 package com.testing.api.controllers;
 
 import com.testing.api.dto.UserDto;
+import com.testing.api.dto.UserResponse;
 import com.testing.api.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,13 @@ public class UserController {
         return new ResponseEntity<>(userService.createUser(userDto), HttpStatus.CREATED);
     }
 
+    @GetMapping("user")
+    public ResponseEntity<UserResponse> getUsers(
+            @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize
+    ) {
+        return new ResponseEntity<>(userService.getAllUser(pageNo, pageSize), HttpStatus.OK);
+    }
 
 
 }

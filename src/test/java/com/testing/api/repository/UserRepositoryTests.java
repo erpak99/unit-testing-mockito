@@ -8,6 +8,8 @@ import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import java.util.List;
+
 @DataJpaTest
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
 public class UserRepositoryTests {
@@ -29,5 +31,27 @@ public class UserRepositoryTests {
                 Assertions.assertThat(savedUser).isNotNull();
                 Assertions.assertThat(savedUser.getId()).isGreaterThan(0);
         }
+
+        @Test
+        public void UserRepository_GetAll_ReturnAllUsers() {
+
+                User user = User.builder()
+                        .name("arda")
+                        .type("customer").build();
+
+                User user2 = User.builder()
+                        .name("ahmet")
+                        .type("customer").build();
+
+                userRepository.save(user);
+                userRepository.save(user2);
+
+                List<User> userList = userRepository.findAll();
+
+                Assertions.assertThat(userList).isNotNull();
+                Assertions.assertThat(userList.size()).isEqualTo(2);
+
+        }
+
 
 }

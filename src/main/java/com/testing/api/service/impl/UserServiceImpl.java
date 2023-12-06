@@ -1,11 +1,18 @@
 package com.testing.api.service.impl;
 
 import com.testing.api.dto.UserDto;
+import com.testing.api.dto.UserResponse;
 import com.testing.api.model.User;
 import com.testing.api.repository.UserRepository;
 import com.testing.api.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -32,12 +39,23 @@ public class UserServiceImpl implements UserService {
         return userResponse;
     }
 
+    @Override
+    public UserResponse getAllUser(int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<User> users = userRepository.findAll(pageable);
+        List<User> listOfUser = users.getContent();
+        List<UserDto> content = listOfUser.stream().map(u -> mapToDto(u)).collect(Collectors.toList());
 
+        UserResponse userResponse = new UserResponse();
+        userResponse.setContent(content);
+        userResponse.setPageNo(users.getNumber());
+        userResponse.setPageSize(users.getSize());
+        userResponse.setTotalElements(users.getTotalElements());
+        userResponse.setTotalPages(users.getTotalPages());
+        userResponse.setLast(users.isLast());
 
-
-
-
-
+        return userResponse;
+    }
 
 
     private UserDto mapToDto(User user) {
