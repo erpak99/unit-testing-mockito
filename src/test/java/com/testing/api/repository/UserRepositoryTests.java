@@ -68,4 +68,23 @@ public class UserRepositoryTests {
                 Assertions.assertThat(userList).isNotNull();
         }
 
+
+        @Test
+        public void UserRepository_FindByType_ReturnUserByType() {
+
+                User user = User.builder()
+                        .name("Arda")
+                        .type("customer").build();
+
+                userRepository.save(user);
+
+                User userList = userRepository.findByType(user.getType()).get();
+
+                Assertions.assertThat(userList).isNotNull();
+
+        }
+
+
+
+
 }
