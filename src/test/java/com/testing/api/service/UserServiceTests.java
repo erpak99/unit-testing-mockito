@@ -1,6 +1,7 @@
 package com.testing.api.service;
 
 import com.testing.api.dto.UserDto;
+import com.testing.api.dto.UserResponse;
 import com.testing.api.model.User;
 import com.testing.api.repository.UserRepository;
 import com.testing.api.service.impl.UserServiceImpl;
@@ -11,6 +12,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import static org.mockito.Mockito.when;
 
@@ -37,6 +40,19 @@ public class UserServiceTests {
         when(userRepository.save(Mockito.any(User.class))).thenReturn(user);
 
         UserDto savedUser = userService.createUser(userDto);
+
+        Assertions.assertThat(savedUser).isNotNull();
+
+    }
+
+    @Test
+    public void UserService_GetAllUser_ReturnsResponseDto() {
+
+        Page<User> users = Mockito.mock(Page.class);
+
+        when(userRepository.findAll(Mockito.any(Pageable.class))).thenReturn(users);
+
+        UserResponse savedUser = userService.getAllUser(1,10);
 
         Assertions.assertThat(savedUser).isNotNull();
 
