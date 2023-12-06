@@ -65,6 +65,29 @@ public class UserServiceImpl implements UserService {
         return mapToDto(user);
     }
 
+    @Override
+    public UserDto updateUser(UserDto userDto, int id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(
+                        () -> new UserNotFoundException("User could not be updated")
+                );
+
+        user.setName(userDto.getName());
+        user.setType(userDto.getType());
+
+        User updatedUser = userRepository.save(user);
+        return mapToDto(updatedUser);
+    }
+
+    @Override
+    public void deleteUserId(int id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(
+                        () -> new UserNotFoundException("Pokemon could not be delete")
+                );
+        userRepository.delete(user);
+    }
+
 
     private UserDto mapToDto(User user) {
         UserDto userDto = new UserDto();

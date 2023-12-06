@@ -9,6 +9,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.List;
+import java.util.Optional;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
@@ -84,7 +85,41 @@ public class UserRepositoryTests {
 
         }
 
+        @Test
+        public void UserRepository_UpdateUser_ReturnUpdatedUser() {
 
+                User user = User.builder()
+                        .name("Arda")
+                        .type("customer").build();
+
+                userRepository.save(user);
+
+                User userSave = userRepository.findById(user.getId()).get();
+
+                userSave.setName("Erpak");
+                userSave.setType("admin");
+
+                User updatedUser = userRepository.save(userSave);
+
+                Assertions.assertThat(updatedUser.getName()).isNotNull();
+                Assertions.assertThat(updatedUser.getType()).isNotNull();
+        }
+
+        @Test
+        public void UserRepository_DeleteUser_ReturnUserIsEmpty() {
+
+                User user = User.builder()
+                        .name("Arda")
+                        .type("customer").build();
+
+                userRepository.save(user);
+
+                userRepository.deleteById(user.getId());
+                Optional<User> deletedUser = userRepository.findById(user.getId());
+
+                Assertions.assertThat(deletedUser).isEmpty();
+
+        }
 
 
 }
