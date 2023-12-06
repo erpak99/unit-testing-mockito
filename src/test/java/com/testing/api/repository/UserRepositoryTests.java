@@ -1,5 +1,8 @@
 package com.testing.api.repository;
 
+import com.testing.api.model.User;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -11,5 +14,20 @@ public class UserRepositoryTests {
 
         @Autowired
         private UserRepository userRepository;
+
+
+        @Test
+        public void UserRepository_SaveAll_ReturnSavedUser() {
+                // Arrange
+                User user = User.builder()
+                        .name("arda")
+                        .type("customer").build();
+                // Act
+                User savedUser = userRepository.save(user);
+
+                //Assert
+                Assertions.assertThat(savedUser).isNotNull();
+                Assertions.assertThat(savedUser.getId()).isGreaterThan(0);
+        }
 
 }
