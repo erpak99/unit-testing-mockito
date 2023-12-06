@@ -2,6 +2,7 @@ package com.testing.api.service.impl;
 
 import com.testing.api.dto.UserDto;
 import com.testing.api.dto.UserResponse;
+import com.testing.api.exceptions.UserNotFoundException;
 import com.testing.api.model.User;
 import com.testing.api.repository.UserRepository;
 import com.testing.api.service.UserService;
@@ -55,6 +56,13 @@ public class UserServiceImpl implements UserService {
         userResponse.setLast(users.isLast());
 
         return userResponse;
+    }
+
+    @Override
+    public UserDto getUserById(int id) {
+        User user = userRepository.findById(id).orElseThrow(() ->
+                new UserNotFoundException("User could not be found"));
+        return mapToDto(user);
     }
 
 

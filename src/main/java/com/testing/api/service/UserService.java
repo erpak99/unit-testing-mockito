@@ -7,6 +7,7 @@ public interface UserService {
 
     UserDto createUser(UserDto userDto);
     UserResponse getAllUser(int pageNo, int pageSize);
+    UserDto getUserById(int id);
 
 
 }

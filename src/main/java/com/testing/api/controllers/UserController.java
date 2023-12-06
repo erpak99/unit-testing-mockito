@@ -34,5 +34,10 @@ public class UserController {
         return new ResponseEntity<>(userService.getAllUser(pageNo, pageSize), HttpStatus.OK);
     }
 
+    @GetMapping("user/{id}")
+    public ResponseEntity<UserDto> userDetail(@PathVariable int id) {
+        return ResponseEntity.ok(userService.getUserById(id));
+
+    }
 
 }

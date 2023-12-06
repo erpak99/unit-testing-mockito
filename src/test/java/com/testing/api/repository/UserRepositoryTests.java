@@ -54,4 +54,18 @@ public class UserRepositoryTests {
         }
 
 
+        @Test
+        public void UserRepository_FindById_ReturnUser() {
+
+                User user = User.builder()
+                        .name("arda")
+                        .type("customer").build();
+
+                userRepository.save(user);
+
+                User userList = userRepository.findById(user.getId()).get();
+
+                Assertions.assertThat(userList).isNotNull();
+        }
+
 }
