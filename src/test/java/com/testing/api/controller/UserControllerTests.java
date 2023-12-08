@@ -94,4 +94,21 @@ public class UserControllerTests {
 
     }
 
+    @Test
+    public void UserController_GetUserById_ReturnUserDto() throws Exception {
+        int userId = 1;
+        when(userService.getUserById(userId)).thenReturn(userDto);
+
+        ResultActions response = mockMvc.perform(get("/api/user/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(userDto)));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name", CoreMatchers.is(userDto.getName())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.type", CoreMatchers.is(userDto.getType())));
+    }
+
+
+
+
 }
