@@ -25,6 +25,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.Arrays;
 
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.mockito.BDDMockito.given;
@@ -108,7 +109,30 @@ public class UserControllerTests {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.type", CoreMatchers.is(userDto.getType())));
     }
 
+    @Test
+    public void UserController_UpdateUser_ReturnUserDto() throws Exception {
+        int userId = 1;
+        when(userService.updateUser(userDto, userId)).thenReturn(userDto);
 
+        ResultActions response = mockMvc.perform(put("/api/user/1/update")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(userDto)));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name", CoreMatchers.is(userDto.getName())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.type", CoreMatchers.is(userDto.getType())));
+    }
+
+    @Test
+    public void UserController_DeleteUser_ReturnString() throws Exception {
+        int userId = 1;
+        doNothing().when(userService).deleteUserId(1);
+
+        ResultActions response = mockMvc.perform(delete("/api/user/1/delete")
+                .contentType(MediaType.APPLICATION_JSON));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk());
+    }
 
 
 }
