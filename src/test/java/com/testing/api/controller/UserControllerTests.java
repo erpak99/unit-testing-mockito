@@ -4,9 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.testing.api.controllers.UserController;
 import com.testing.api.dto.ReviewDto;
 import com.testing.api.dto.UserDto;
+import com.testing.api.dto.UserResponse;
 import com.testing.api.model.Review;
 import com.testing.api.model.User;
 import com.testing.api.service.UserService;
+import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,6 +22,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
+import java.util.Arrays;
+
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.mockito.BDDMockito.given;
 
@@ -59,7 +65,32 @@ public class UserControllerTests {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(userDto)));
 
-        response.andExpect(MockMvcResultMatchers.status().isCreated());
+        response.andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name", CoreMatchers.is(userDto.getName())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.type", CoreMatchers.is(userDto.getType())));
+
+    }
+
+    @Test
+    public void UserController_GetAllUser_ReturnResponseDto() throws Exception {
+
+        UserResponse responseDto = UserResponse.builder()
+                .pageSize(10)
+                .last(true)
+                .pageNo(1)
+                .content(Arrays.asList(userDto))
+                .build();
+
+        when(userService.getAllUser(1,10))
+                .thenReturn(responseDto);
+
+        ResultActions response = mockMvc.perform(get("/api/user")
+                .contentType(MediaType.APPLICATION_JSON)
+                .param("pageNo", "1")
+                .param("pageSize","10"));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("content.size()",CoreMatchers.is(responseDto.getContent().size())));
 
     }
 
