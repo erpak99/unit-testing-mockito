@@ -68,5 +68,24 @@ public class ReviewServiceTests {
 
     }
 
+    @Test
+    public void ReviewService_FindById_ReturnsReview() {
+
+        int reviewId = review.getId();
+        int userId = user.getId();
+
+        review.setUser(user);
+
+        when(reviewRepository.findById(reviewId)).thenReturn(Optional.of(review));
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+
+        ReviewDto returnedReview = reviewService.getReviewById(reviewId,userId);
+
+        Assertions.assertThat(returnedReview).isNotNull();
+
+    }
+
+
+
 
 }
