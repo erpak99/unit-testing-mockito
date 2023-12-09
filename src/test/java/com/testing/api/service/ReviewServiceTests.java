@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -85,7 +86,40 @@ public class ReviewServiceTests {
 
     }
 
+    @Test
+    public void ReviewService_UpdateReview_ReturnsReviewDto() {
 
+        int reviewId = review.getId();
+        int userId = user.getId();
+
+        user.setReviews(Arrays.asList(review));
+        review.setUser(user);
+
+        when(reviewRepository.findById(reviewId)).thenReturn(Optional.of(review));
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(reviewRepository.save(Mockito.any(Review.class))).thenReturn(review);
+
+        ReviewDto updatedReview = reviewService.updateReview(userId,reviewId,reviewDto);
+
+        Assertions.assertThat(updatedReview).isNotNull();
+    }
+
+    @Test
+    public void ReviewService_DeleteReview_ReturnVoid() {
+
+
+        int reviewId = review.getId();
+        int userId = user.getId();
+
+        user.setReviews(Arrays.asList(review));
+        review.setUser(user);
+
+        when(reviewRepository.findById(reviewId)).thenReturn(Optional.of(review));
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+
+        assertAll( () -> reviewService.deleteReview(userId,reviewId));
+
+    }
 
 
 }
