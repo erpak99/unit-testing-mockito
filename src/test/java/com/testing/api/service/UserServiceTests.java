@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 public class UserServiceTests {
 
     @Mock
-    public UserRepository userRepository;
+    private UserRepository userRepository;
 
     @InjectMocks
     private UserServiceImpl userService;
