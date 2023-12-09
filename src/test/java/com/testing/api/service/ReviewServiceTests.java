@@ -16,6 +16,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.Mockito.when;
@@ -55,6 +57,16 @@ public class ReviewServiceTests {
 
     }
 
+    @Test
+    public void ReviewService_FindByUserId_ReturnsReviewDtoList() {
+
+        when(reviewRepository.findByUserId(user.getId())).thenReturn(Arrays.asList(review));
+
+        List<ReviewDto> returnedReviews = reviewService.getReviewsByUserId(user.getId());
+
+        Assertions.assertThat(returnedReviews).isNotNull();
+
+    }
 
 
 }
