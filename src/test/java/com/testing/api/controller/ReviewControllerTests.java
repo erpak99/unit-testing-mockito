@@ -23,6 +23,7 @@ import java.util.Arrays;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.mockito.Mockito.doNothing;
 
 
 @WebMvcTest(controllers = ReviewController.class)
@@ -63,5 +64,37 @@ public class ReviewControllerTests {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.size()",
                         CoreMatchers.is(Arrays.asList(userDto).size())));
     }
+
+
+    @Test
+    public void ReviewController_UpdateReview_ReturnReviewDto() throws Exception {
+        int userId = 1;
+        int reviewId = 1;
+        when(reviewService.updateReview(userId, reviewId, reviewDto)).thenReturn(reviewDto);
+
+        ResultActions response = mockMvc.perform(put("/api/user/1/reviews/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(reviewDto)));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.title", CoreMatchers.is(reviewDto.getTitle())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.content", CoreMatchers.is(reviewDto.getContent())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.stars", CoreMatchers.is(reviewDto.getStars())));
+    }
+
+    @Test
+    public void ReviewController_DeleteReview_ReturnOk() throws Exception {
+        int userId = 1;
+        int reviewId = 1;
+
+        doNothing().when(reviewService).deleteReview(userId, reviewId);
+
+        ResultActions response = mockMvc.perform(delete("/api/user/1/reviews/1")
+                .contentType(MediaType.APPLICATION_JSON));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
+
 
 }
