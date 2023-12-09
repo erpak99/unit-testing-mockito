@@ -65,6 +65,35 @@ public class ReviewControllerTests {
                         CoreMatchers.is(Arrays.asList(userDto).size())));
     }
 
+    @Test
+    public void ReviewController_CreateReview_ReturnReviewDto() throws Exception {
+        int userId = 1;
+        when(reviewService.createReview(userId, reviewDto)).thenReturn(reviewDto);
+
+        ResultActions response = mockMvc.perform(post("/api/user/1/reviews")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(reviewDto)));
+
+        response.andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.title", CoreMatchers.is(reviewDto.getTitle())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.content", CoreMatchers.is(reviewDto.getContent())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.stars", CoreMatchers.is(reviewDto.getStars())));
+    }
+
+    @Test
+    public void ReviewController_GetReviewId_ReturnReviewDto() throws Exception {
+        int userId = 1;
+        int reviewId = 1;
+        when(reviewService.getReviewById(reviewId, userId)).thenReturn(reviewDto);
+
+        ResultActions response = mockMvc.perform(get("/api/user/1/reviews/1")
+                .contentType(MediaType.APPLICATION_JSON));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.title", CoreMatchers.is(reviewDto.getTitle())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.content", CoreMatchers.is(reviewDto.getContent())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.stars", CoreMatchers.is(reviewDto.getStars())));
+    }
 
     @Test
     public void ReviewController_UpdateReview_ReturnReviewDto() throws Exception {
